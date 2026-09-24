@@ -440,7 +440,7 @@ The participant filter is checked per-item during the validation pass. An attack
 
 ### 7. Rate Limiting
 
-Rate limiting applies per element across every batch entry point. Both `batch_lock_funds` and `batch_release_funds` call `anti_abuse::check_rate_limit` for each item's designated address (depositor for lock, contributor for release). The check respects whitelist bypass — addresses on the whitelist skip the limit. A batch where any individual element would exceed the per-element rate limit is rejected with `Error::RateLimitExceeded` (or the existing `panic!("Rate limit exceeded")` from `check_rate_limit`).
+Rate limiting applies per element across every batch entry point. Both `batch_lock_funds` and `batch_release_funds` call `anti_abuse::check_rate_limit` for each item's designated address (depositor for lock, contributor for release). The check respects whitelist bypass — addresses on the whitelist skip the limit. A batch where any individual element would exceed the per-element rate limit is rejected by the existing `panic!("Rate limit exceeded")` from `check_rate_limit`.
 
 High-throughput batch users should be placed on the whitelist via `set_whitelist_entry` to bypass rate limiting.
 
