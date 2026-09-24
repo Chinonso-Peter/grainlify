@@ -7837,6 +7837,9 @@ impl BountyEscrowContract {
                 // Participant filtering (blocklist-only / allowlist-only / disabled)
                 Self::check_participant_filter(&env, item.depositor.clone())?;
 
+                // Rate limit: check per-depositor across batch elements
+                anti_abuse::check_rate_limit(&env, item.depositor.clone());
+
                 // Check if bounty already exists
                 if env
                     .storage()
@@ -8127,6 +8130,9 @@ impl BountyEscrowContract {
                     reentrancy_guard::release(&env);
                     return Err(Error::FundsNotLocked);
                 }
+
+                // Rate limit: check per-contributor across batch elements
+                anti_abuse::check_rate_limit(&env, item.contributor.clone());
 
                 // Check for duplicate bounty_ids in the batch
                 let mut count = 0u32;
@@ -10157,7 +10163,7 @@ mod escrow_status_transition_tests {
 
 // Pre-existing broken test modules excluded until their referenced types/methods are implemented:
 // #[cfg(test)] mod test_batch_failure_mode;
-// #[cfg(test)] mod test_batch_failure_modes;
+#[cfg(test)] mod test_batch_failure_modes;
 #[cfg(test)]
 mod test_admin_invalid_identifiers;
 #[cfg(test)]
