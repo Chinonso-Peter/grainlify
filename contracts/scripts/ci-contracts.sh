@@ -17,16 +17,19 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 MANIFEST="$ROOT_DIR/contracts/bounty_escrow/Cargo.toml"
 
-echo "==> [1/3] Workspace tests (host target)"
+echo "==> [1/4] Workspace tests (host target)"
 cargo test --manifest-path "$MANIFEST" --workspace
 
-echo "==> [2/3] Storage-key collision audit (grainlify-contracts)"
+echo "==> [2/4] Storage-key collision audit (grainlify-contracts)"
 # `contracts/` used to belong to no workspace, so its storage-collision audit
 # was never built. It is now a workspace of its own and is exercised here, which
 # pins the audit to a check that runs on every pull request.
 cargo test --manifest-path "$ROOT_DIR/contracts/Cargo.toml" --workspace
 
-echo "==> [3/3] Deployable wasm release build"
+echo "==> [3/4] Program escrow reentrancy guard tests"
+cargo test --locked --manifest-path "$ROOT_DIR/contracts/program-escrow/Cargo.toml" reentrancy_tests::
+
+echo "==> [4/4] Deployable wasm release build"
 cargo build --manifest-path "$MANIFEST" --workspace --target wasm32-unknown-unknown --release
 
 echo "==> All contract CI gates passed."
