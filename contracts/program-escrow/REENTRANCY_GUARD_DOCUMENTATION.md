@@ -54,7 +54,7 @@ The following mutations were validated independently and restored after each run
 
 ## CI and local execution
 
-`.github/workflows/program-escrow-reentrancy.yml` runs the suite on every pull request with no path filter. The same command is also step 3 of `contracts/scripts/ci-contracts.sh`, so contract CI and local script runs stay aligned:
+The existing `.github/workflows/e2e-upgrade-tests.yml` `Contract smoke` workflow has no pull-request path filter; its `program-escrow reentrancy guards` job runs this suite on every PR. The same command is also step 3 of `contracts/scripts/ci-contracts.sh`, so contract CI and local script runs stay aligned:
 
 ```bash
 cargo test --locked \
